@@ -1,0 +1,44 @@
+import unittest
+from warrior import Warrior
+
+class TestWarrior(unittest.TestCase):
+    def setUp(self):
+        self.warrior1 = Warrior("Воин 1")
+        self.warrior2 = Warrior("Воин 2")
+
+    def test_initialization(self):
+        self.assertEqual(self.warrior1.health, 100)
+        self.assertEqual(self.warrior1.armor, 50)
+        self.assertEqual(self.warrior1.endurance, 100)
+
+    def test_attack_damage_endurance_decrease(self):
+        initial_health = self.warrior2.health
+        initial_endurance = self.warrior1.endurance
+        self.warrior1.attack(self.warrior2)
+        
+        self.assertLessEqual(self.warrior2.health, initial_health)
+        self.assertEqual(self.warrior1.endurance, initial_endurance - 10)
+
+    def test_defense_with_armor(self):
+        self.warrior1.defend()
+        self.assertLessEqual(self.warrior1.health, 100)
+        self.assertLessEqual(self.warrior1.armor, 50)
+
+    def test_defense_without_armor(self):
+        self.warrior1.armor = 0
+        initial_health = self.warrior1.health
+        self.warrior1.defend()
+        
+        self.assertLess(self.warrior1.health, initial_health)  # Здоровье должно снижаться
+
+    def test_health_endurance_bounds(self):
+        self.warrior1.health = -10
+        self.warrior1.endurance = -10
+        self.warrior1.armor = -10
+
+        self.assertGreaterEqual(self.warrior1.health, 0)
+        self.assertGreaterEqual(self.warrior1.endurance, 0)
+        self.assertGreaterEqual(self.warrior1.armor, 0)
+
+if __name__ == '__main__':
+    unittest.main()
